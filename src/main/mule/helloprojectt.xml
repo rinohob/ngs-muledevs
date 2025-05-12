@@ -37,8 +37,8 @@ output application/json
 output application/json
 ---
 {
-"corelationis":vars."corelation-id",
-"trnasactionis": vars."x-ternasationid"
+"corelationis":"===============================",
+"trnasactionis": ">>>>>>>>>>>>>>>>>>>>>>>>>>"
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
