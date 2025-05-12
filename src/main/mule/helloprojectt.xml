@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8ae0e88c-39d7-41a3-924f-f8aa0e013162" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="helloprojecttFlow" doc:id="8a641238-0cc1-4eb3-a44c-5597ef1b1883" >
+		<http:listener doc:name="Listener" doc:id="3bfb774f-bedd-4105-90cf-cf38d5ff7646" config-ref="HTTP_Listener_config" path="/test121"/>
+		<ee:transform doc:name="Transform Message" doc:id="898967e0-ec84-4cb6-8f9e-f43c820df4ba" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="corelation-id" ><![CDATA[attributes.headers.'x-corelation-id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<set-variable value="#[attributes.headers.'x-transaction-id' default uuid()]" doc:name="Set Variable" doc:id="9b3f3d3f-1dd0-4a90-a7b4-fabd78e23c4e" variableName="x-ternasationid"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="4be45ea6-020c-4611-80f6-34b20d2c2591" />
+		<ee:transform doc:name="Transform Message" doc:id="83b6bb65-9e79-4bdc-9523-6e2c604e0f4a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"corelationis":vars."corelation-id",
+"trnasactionis": vars."x-ternasationid"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
